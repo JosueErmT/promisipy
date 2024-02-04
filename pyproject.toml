@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "py_promise"
+name = "promesipy"
 version = "0.0.1"
 authors = [{ name = "Alexandro Tapia", email = "zpaceway@gmail.com" }]
 description = "This Python library provides a flexible and easy-to-use asynchronous programming model based on the concept of promises, similar to those found in JavaScript. It supports both threading and multiprocessing for executing tasks concurrently, allowing users to write efficient and non-blocking code that can scale across multiple cores or simply leverage threads for I/O-bound tasks"
@@ -16,5 +16,5 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/zpacewat/py_promise"
-Issues = "https://github.com/zpacewat/py_promise/issues"
+Homepage = "https://github.com/zpacewat/promesipy"
+Issues = "https://github.com/zpacewat/promesipy/issues"

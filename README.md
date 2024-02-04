@@ -11,7 +11,7 @@ This library is designed to be lightweight and straightforward, making it suitab
 # Example of usage
 
 ```python
-from py_promise import Promise
+from promesipy import Promise
 import requests
 from pprint import pprint
 
