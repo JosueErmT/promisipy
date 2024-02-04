@@ -1,50 +1,93 @@
 # Introduction
 
-This Python library provides a flexible and easy-to-use asynchronous programming model based on the concept of promises, similar to those found in JavaScript. It supports both threading and multiprocessing for executing tasks concurrently, allowing users to write efficient and non-blocking code that can scale across multiple cores or simply leverage threads for I/O-bound tasks. At the core of the library are two main components: EventLoop and Promise.
+This Python project provides a concurrency framework using promises, enabling asynchronous execution of tasks with support for both threading and multiprocessing. It allows for easy task execution management, result handling, and synchronization of concurrent operations without delving into the complexities of threading or multiprocessing modules directly.
 
-EventLoop: Manages a collection of promises, facilitating the registration of new promises and waiting for their completion. It acts as the central hub through which all asynchronous activities are coordinated.
+## Features
 
-Promise: Represents a single asynchronous operation. A promise can be executed in either a threading or multiprocessing context, depending on the task's requirements. It encapsulates the task execution, result storage, and error handling. Promises can be waited on for completion, and their results retrieved once finished. Additionally, the library provides a mechanism to wait for multiple promises simultaneously, simplifying the handling of concurrent operations.
+- **Simple API**: Intuitive and easy-to-use API for managing asynchronous task executions.
+- **Concurrency Modes**: Supports both threading and multiprocessing to cater to different use cases.
+- **Promise-Based**: Utilize promises for handling asynchronous execution results and errors.
+- **Event Loop**: Central event loop for managing and synchronizing promise lifecycles.
+- **Decorators**: Simplify asynchronous function execution with decorators.
 
-This library is designed to be lightweight and straightforward, making it suitable for a wide range of applications, from IO-bound tasks to CPU-heavy processes, by abstracting the complexity of managing threads and processes behind a simple API.
+## Installation
 
-# Example of usage
+This project does not require installation of external packages. Ensure you have Python 3.8 or newer installed on your system, as this project utilizes features introduced in Python 3.8.
+
+## Usage
+
+### Basic Concepts
+
+1. **Promise**: Represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+2. **Event Loop**: Manages the lifecycle of promises, including registration, execution, and unregistration.
+3. **`promisipy` Decorator**: Converts a regular function into one that returns a promise when called, executing the function in a separate thread or process.
+
+### Creating a Promise
+
+To create a promise, instantiate a `Promise` object with a target function. Specify the concurrency mode (`"threading"` or `"multiprocessing"`) according to your needs.
+
+### Waiting for a Promise to Resolve
+
+Use the `wait` method on a promise object to block until the promise has resolved. This method returns a `Promise.Resolution` object containing the result or error.
+
+### Executing Functions Asynchronously
+
+Decorate functions with `@promisipy(mode="threading")` or `@promisipy(mode="multiprocessing")` to run them asynchronously as promises.
+
+## Examples
+
+### Basic Promise Execution
 
 ```python
-from promisipy import Promise, promisipy
-import requests
-from pprint import pprint
+from your_project_file import Promise, promisipy
 
+# Function to execute asynchronously
+def task():
+    return "Result of async task"
 
-@promisipy(mode="multiprocessing")
-def get_rnm_info_from_id(rnm_id: str) -> dict:
-    result = requests.get(f"https://rickandmortyapi.com/api/character/{rnm_id}")
-    data = result.json()
-    name = data["name"]
-    origin_url = data["origin"]["url"]
-    location_url = data["location"]["url"]
+# Create and start a promise
+promise = Promise(execution=task, mode="threading").start()
 
-    origin_promise = Promise(lambda: requests.get(origin_url).json()).start()
-    location_promise = Promise(lambda: requests.get(location_url).json()).start()
-
-    origin_resolution, location_resolution = Promise.all(
-        [origin_promise, location_promise]
-    )
-
-    return {
-        "id": rnm_id,
-        "name": name,
-        "origin": origin_resolution.result["name"],
-        "location": location_resolution.result["name"],
-    }
-
-
-def main():
-    promises = [get_rnm_info_from_id(i).start() for i in range(1, 100)]
-    profiles = [profile_resultion.result for profile_resultion in Promise.all(promises)]
-    pprint(profiles)
-
-
-if __name__ == "__main__":
-    main()
+# Wait for the promise to resolve
+resolution = promise.wait()
+print("Result:", resolution.result)
 ```
+
+### Using `promisipy` Decorator
+
+```python
+from your_project_file import promisipy
+
+@promisipy(mode="threading")
+def async_task():
+    return "Result from decorated async task"
+
+# The function now returns a promise
+promise = async_task()
+
+# Wait for the promise to resolve and print the result
+print("Result:", promise.wait().result)
+```
+
+### Waiting for Multiple Promises
+
+```python
+from your_project_file import Promise, promisipy
+
+# Define multiple tasks
+def task1():
+    return "Result of task 1"
+
+def task2():
+    return "Result of task 2"
+
+# Create promises for each task
+promise1 = Promise(execution=task1, mode="threading").start()
+promise2 = Promise(execution=task2, mode="threading").start()
+
+# Wait for all promises to resolve
+results = Promise.all([promise1, promise2])
+print("Results:", [res.result for res in results])
+```
+
+This framework is versatile and can be adapted for various asynchronous execution needs, simplifying the handling of concurrent operations in your Python applications.
