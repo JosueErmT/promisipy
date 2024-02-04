@@ -1,4 +1,4 @@
-from promesipy import Promise
+from promisipy import Promise
 import requests
 from pprint import pprint
 

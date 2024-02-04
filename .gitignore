@@ -1,4 +1,4 @@
 __pycache__
 dist
 *.pyc
-/src/promesipy.egg-info
+/src/promisipy.egg-info
