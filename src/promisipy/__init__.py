@@ -93,7 +93,7 @@ class Promise:
             self.task.join()
 
             try:
-                result, error = self._metadata["queue"].get_nowait()
+                result, error = self._metadata["queue"].get()
                 self.resolution.result = result
                 self.resolution.error = error
             except Empty:
