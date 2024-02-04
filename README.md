@@ -39,7 +39,7 @@ Decorate functions with `@promisipy(mode="threading")` or `@promisipy(mode="mult
 ### Basic Promise Execution
 
 ```python
-from your_project_file import Promise, promisipy
+from promisipy import Promise, promisipy
 
 # Function to execute asynchronously
 def task():
@@ -56,7 +56,7 @@ print("Result:", resolution.result)
 ### Using `promisipy` Decorator
 
 ```python
-from your_project_file import promisipy
+from promisipy import promisipy
 
 @promisipy(mode="threading")
 def async_task():
@@ -72,7 +72,7 @@ print("Result:", promise.wait().result)
 ### Waiting for Multiple Promises
 
 ```python
-from your_project_file import Promise, promisipy
+from promisipy import Promise, promisipy
 
 # Define multiple tasks
 def task1():
