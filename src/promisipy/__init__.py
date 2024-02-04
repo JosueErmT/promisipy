@@ -1,7 +1,6 @@
 from typing import List, Any, Literal, Union
 import threading
 import multiprocessing
-from enum import StrEnum
 
 
 class EventLoop:
@@ -24,7 +23,7 @@ main_event_loop = EventLoop()
 
 
 class Promise:
-    class Status(StrEnum):
+    class Status:
         CREATED = "created"
         STARTED = "started"
         FINISHED = "finished"
