@@ -12,10 +12,13 @@ class EventLoop:
     def register(self, promise: "Promise"):
         self.promises.append(promise)
 
+    def unregister(self, promise: "Promise"):
+        self.promises = [_promise for _promise in self.promises if _promise != promise]
+
     def wait(self):
         for promise in self.promises:
             if promise.status != Promise.Status.CREATED:
-                return
+                continue
             promise.wait()
 
 
@@ -44,9 +47,12 @@ class Promise:
         mode: Literal["threading", "multiprocessing"] = "threading",
         event_loop=main_event_loop,
     ) -> None:
-        self._metadata = {}
+        self.status = Promise.Status.CREATED
         self.event_loop = event_loop
-        event_loop.register(self)
+        self.resolution = Promise.Resolution()
+        self._metadata = {}
+        self.event_loop.register(self)
+
         if mode == "threading":
 
             def wrapped():
@@ -61,6 +67,7 @@ class Promise:
                     self.status = Promise.Status.FINISHED
 
             self.task = threading.Thread(target=wrapped)
+
         if mode == "multiprocessing":
             self._metadata["queue"] = multiprocessing.Queue()
 
@@ -80,8 +87,6 @@ class Promise:
             self.task = multiprocessing.Process(
                 target=wrapped, args=[self._metadata["queue"]]
             )
-        self.resolution = Promise.Resolution()
-        self.status = Promise.Status.CREATED
 
     def start(self):
         if self.status != Promise.Status.CREATED:
@@ -105,6 +110,8 @@ class Promise:
             self.resolution.result = self._metadata["queue"].get()
             self.resolution.error = self._metadata["queue"].get()
             self.status = self._metadata["queue"].get()
+
+        self.event_loop.unregister(self)
 
         return self.resolution
 
