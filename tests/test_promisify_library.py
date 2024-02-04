@@ -13,7 +13,7 @@ def sync_task_with_error():
     raise ValueError("Intentional error for testing")
 
 
-class TestConcurrencyFramework(unittest.TestCase):
+class TestPromisifyLibrary(unittest.TestCase):
 
     def test_promise_resolution(self):
         """Test if Promise correctly resolves with a result."""
