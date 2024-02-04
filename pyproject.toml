@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "promisipy"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{ name = "Alexandro Tapia", email = "zpaceway@gmail.com" }]
 description = "This Python library provides a flexible and easy-to-use asynchronous programming model based on the concept of promises, similar to those found in JavaScript. It supports both threading and multiprocessing for executing tasks concurrently, allowing users to write efficient and non-blocking code that can scale across multiple cores or simply leverage threads for I/O-bound tasks"
 readme = "README.md"
