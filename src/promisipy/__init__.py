@@ -2,6 +2,7 @@ from typing import Callable, List, Any, Literal, Union
 import threading
 import multiprocessing
 from queue import Empty
+from functools import wraps
 
 
 class EventLoop:
@@ -107,3 +108,21 @@ class Promise:
     @staticmethod
     def all(promises: List["Promise"]):
         return [promise.wait() for promise in promises]
+
+
+def promisipy(
+    mode: Literal["threading", "multiprocessing"] = "threading",
+    event_loop=main_event_loop,
+):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapped(*args, **kwargs):
+            return Promise(
+                lambda: fn(*args, **kwargs),
+                mode=mode,
+                event_loop=event_loop,
+            )
+
+        return wrapped
+
+    return decorator
