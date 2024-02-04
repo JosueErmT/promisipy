@@ -11,11 +11,12 @@ This library is designed to be lightweight and straightforward, making it suitab
 # Example of usage
 
 ```python
-from promisipy import Promise
+from promisipy import Promise, promisipy
 import requests
 from pprint import pprint
 
 
+@promisipy(mode="multiprocessing")
 def get_rnm_info_from_id(rnm_id: str) -> dict:
     result = requests.get(f"https://rickandmortyapi.com/api/character/{rnm_id}")
     data = result.json()
@@ -39,10 +40,7 @@ def get_rnm_info_from_id(rnm_id: str) -> dict:
 
 
 def main():
-    promises = [
-        Promise(lambda i=i: get_rnm_info_from_id(i), mode="multiprocessing").start()
-        for i in range(1, 100)
-    ]
+    promises = [get_rnm_info_from_id(i).start() for i in range(1, 100)]
     profiles = [profile_resultion.result for profile_resultion in Promise.all(promises)]
     pprint(profiles)
 
