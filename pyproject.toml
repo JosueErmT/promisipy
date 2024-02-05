@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "promisipy"
-version = "0.1.2"
+version = "0.1.3"
 authors = [{ name = "Alexandro Tapia", email = "zpaceway@gmail.com" }]
 description = "This Python library provides a flexible and easy-to-use asynchronous programming model based on the concept of promises, similar to those found in JavaScript."
 readme = "README.md"

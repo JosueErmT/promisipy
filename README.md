@@ -14,6 +14,12 @@ This Python project provides a concurrency framework using promises, enabling as
 
 This project does not require installation of external packages. Ensure you have Python 3.8 or newer installed on your system, as this project utilizes features introduced in Python 3.8.
 
+To install it, run the following command:
+
+```
+pip install promisipy
+```
+
 ## Usage
 
 ### Basic Concepts
