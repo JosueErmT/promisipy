@@ -1,3 +1,5 @@
+Forked from zpaceway/promisipy to add Promise.then and Promise.catch methods.
+
 # Introduction
 
 This Python project provides a concurrency framework using promises, enabling asynchronous execution of tasks with support for both threading and multiprocessing. It allows for easy task execution management, result handling, and synchronization of concurrent operations without delving into the complexities of threading or multiprocessing modules directly.
