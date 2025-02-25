@@ -1,4 +1,5 @@
 from typing import Callable, List, Any, Literal, Union
+import inspect
 import threading
 import multiprocessing
 from queue import Empty
@@ -104,6 +105,22 @@ class Promise:
             self.event_loop.unregister(self)
 
         return self.resolution
+
+    def then(self, execution):
+        def then():
+            resolution = self.wait()
+            if resolution.error is None:
+                execution(resolution.result)
+
+        return Promise(then).start()
+    
+    def catch(self, execution):
+        def catch():
+            resolution = self.wait()
+            if resolution.error is not None:
+                execution(resolution.result, resolution.error)
+
+        return Promise(catch).start()
 
     @staticmethod
     def all(promises: List["Promise"]):
