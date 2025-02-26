@@ -111,38 +111,38 @@ class Promise:
             argspec = inspect.getfullargspec(execution)
             args = argspec.args
             if inspect.ismethod(execution):                 # if execution is a method
-                args = args[1:]                             # then get rid of the 'self' argument
+                args = args[1:]                             # then discard the 'self' argument
 
             if (len(argspec.args) < 1                                                                       # if the amount of args of execution is less than 1
                 or len(argspec.args) - (0 if argspec.defaults is None else len(argspec.defaults)) > 1):     # or the amount of required args is more than 1
                 raise ValueError("invalid callable")
         else:
             raise TypeError("execution argument is not callable")
-        
+
         def then():
             resolution = self.wait()
             if resolution.error is None:
-                execution(resolution.result)
+                return execution(resolution.result)
 
         return Promise(then).start()
-    
+
     def catch(self, execution):
         if callable(execution):
             argspec = inspect.getfullargspec(execution)
             args = argspec.args
             if inspect.ismethod(execution):                 # if execution is a method
-                args = args[1:]                             # then get rid of the 'self' argument
+                args = args[1:]                             # then discard the 'self' argument
 
-            if (len(argspec.args) < 2                                                                       # if the amount of args of execution is less than 2
-                or len(argspec.args) - (0 if argspec.defaults is None else len(argspec.defaults)) > 2):     # or the amount of required args is more than 2
+            if (len(argspec.args) < 1                                                                       # if the amount of args of execution is less than 1
+                or len(argspec.args) - (0 if argspec.defaults is None else len(argspec.defaults)) > 1):     # or the amount of required args is more than 1
                 raise ValueError("invalid callable")
         else:
             raise TypeError("execution argument is not callable")
-        
+
         def catch():
             resolution = self.wait()
             if resolution.error is not None:
-                execution(resolution.result, resolution.error)
+                return execution(resolution.error)
 
         return Promise(catch).start()
 
@@ -154,15 +154,20 @@ class Promise:
 def promisipy(
     mode: Literal["threading", "multiprocessing"] = "threading",
     event_loop=main_event_loop,
+    autostart=False
 ):
     def decorator(fn):
         @wraps(fn)
         def wrapped(*args, **kwargs):
-            return Promise(
+            p = Promise(
                 lambda: fn(*args, **kwargs),
                 mode=mode,
                 event_loop=event_loop,
             )
+            if autostart:
+                p = p.start()
+
+            return p
 
         return wrapped
 
